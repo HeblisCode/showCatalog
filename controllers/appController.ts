@@ -15,7 +15,7 @@ import {
 import { userModelCreationAttributes } from "../models/userModel";
 import UserRepo, { User } from "../repository/userRepo";
 import showService from "../services/showService";
-import UserService from "../services/userService";
+import UserService, { tokenAndId } from "../services/userService";
 
 @JsonController()
 export class AppController {
@@ -48,7 +48,7 @@ export class AppController {
   /*
   + http://localhost:3000/user/register
   + 
-  + requires Body
+  + requires Body {email: string, password: string}
   */
   @Post("/user/register")
   registerUser(@Body() payload: userModelCreationAttributes) {
@@ -61,13 +61,33 @@ export class AppController {
     }
   }
 
+  /*
+  + http://localhost:3000/user/login
+  + 
+  + requires Body {email: string, password: string}
+  */
   @Get("/user/login")
   async login(@Body() payload: User) {
     try {
-      const token: string = await this.userService.login(payload);
-      return { staus: 200, token: token };
+      const data: tokenAndId = await this.userService.login(payload);
+      return { staus: 200, token: data.token, id: data.userId };
     } catch (err) {
       return { status: 401 };
+    }
+  }
+
+  @Authorized()
+  @Post("/show/vote/:rate/:showId")
+  async rateShow(@Req() request: any, @Res() response: any) {
+    try {
+      const userId: number = request.headers["userinfo"];
+      const showId: number = request.params["showId"];
+      const rate: number = request.params["rate"];
+      console.log(userId, showId, rate);
+      await this.userService.rateShow(rate, userId, showId);
+      return {};
+    } catch (err) {
+      return response.sendStatus(500);
     }
   }
 }

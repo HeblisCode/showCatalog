@@ -1,7 +1,6 @@
 import { Action, createExpressServer } from "routing-controllers";
 import "reflect-metadata";
 import { AppController } from "./controllers/appController";
-import { SQLZ } from "./utils/SQLZ";
 
 const app = createExpressServer({
   controllers: [AppController],

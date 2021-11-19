@@ -19,13 +19,24 @@ class UserService {
     }
     login(payload) {
         return __awaiter(this, void 0, void 0, function* () {
-            const isUserRegistered = yield this.userRepo.isUserRegistered(payload);
-            if (isUserRegistered) {
-                return "testToken:190561756138456197418347194";
+            const user = yield this.userRepo.findUser(payload);
+            if (user.userFound) {
+                return {
+                    token: "testToken:190561756138456197418347194",
+                    userId: user.userId,
+                };
             }
             else {
                 throw "not registered";
             }
+        });
+    }
+    rateShow(rate, userId, showId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (rate < 0 || rate > 5) {
+                throw "Input error: field rate must be between 0 and 5";
+            }
+            this.userRepo.rateShow(rate, userId, showId);
         });
     }
 }
