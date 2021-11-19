@@ -23,10 +23,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppController = void 0;
 const routing_controllers_1 = require("routing-controllers");
+const userRepo_1 = __importDefault(require("../repository/userRepo"));
 const showService_1 = __importDefault(require("../services/showService"));
+const userService_1 = __importDefault(require("../services/userService"));
 let AppController = class AppController {
     constructor() {
         this.service = new showService_1.default();
+        this.userService = new userService_1.default();
     }
     getAll(request, response) {
         var _a, _b;
@@ -41,6 +44,27 @@ let AppController = class AppController {
             return yield this.service.getShowDetail(showId);
         });
     }
+    registerUser(payload) {
+        const repo = new userRepo_1.default();
+        try {
+            repo.registerUser(payload);
+            return { status: 200 };
+        }
+        catch (err) {
+            return { status: 500, err: err.stack };
+        }
+    }
+    login(payload) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const token = yield this.userService.login(payload);
+                return { staus: 200, token: token };
+            }
+            catch (err) {
+                return { status: 401 };
+            }
+        });
+    }
 };
 __decorate([
     (0, routing_controllers_1.Get)("/show"),
@@ -48,9 +72,18 @@ __decorate([
     __param(1, (0, routing_controllers_1.Res)())
 ], AppController.prototype, "getAll", null);
 __decorate([
+    (0, routing_controllers_1.Authorized)(),
     (0, routing_controllers_1.Get)("/show/detail/:showId"),
     __param(0, (0, routing_controllers_1.Param)("showId"))
 ], AppController.prototype, "getShowDetail", null);
+__decorate([
+    (0, routing_controllers_1.Post)("/user/register"),
+    __param(0, (0, routing_controllers_1.Body)())
+], AppController.prototype, "registerUser", null);
+__decorate([
+    (0, routing_controllers_1.Get)("/user/login"),
+    __param(0, (0, routing_controllers_1.Body)())
+], AppController.prototype, "login", null);
 AppController = __decorate([
     (0, routing_controllers_1.JsonController)()
 ], AppController);

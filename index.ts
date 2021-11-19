@@ -1,24 +1,18 @@
-import { createExpressServer } from "routing-controllers";
+import { Action, createExpressServer } from "routing-controllers";
 import "reflect-metadata";
 import { AppController } from "./controllers/appController";
 import { SQLZ } from "./utils/SQLZ";
 
 const app = createExpressServer({
   controllers: [AppController],
+  cors: true,
+  authorizationChecker: async (action: Action, roles: string[]) => {
+    const token = action.request.headers["testtoken"];
+    return token === "testToken:190561756138456197418347194";
+  },
 });
 
 // run express application on port 3000
 app.listen(3000, () => {
   console.log("Server up and running");
 });
-
-const test = SQLZ.getInstance();
-
-(async () => {
-  try {
-    await test.authenticate();
-    console.log("yep");
-  } catch (err) {
-    console.log("nope", err);
-  }
-})();

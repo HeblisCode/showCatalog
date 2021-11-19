@@ -8,19 +8,26 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const routing_controllers_1 = require("routing-controllers");
-require("reflect-metadata");
-const appController_1 = require("./controllers/appController");
-const app = (0, routing_controllers_1.createExpressServer)({
-    controllers: [appController_1.AppController],
-    cors: true,
-    authorizationChecker: (action, roles) => __awaiter(void 0, void 0, void 0, function* () {
-        const token = action.request.headers["testtoken"];
-        return token === "testToken:190561756138456197418347194";
-    }),
-});
-app.listen(3000, () => {
-    console.log("Server up and running");
-});
-//# sourceMappingURL=index.js.map
+const userRepo_1 = __importDefault(require("../repository/userRepo"));
+class UserService {
+    constructor() {
+        this.userRepo = new userRepo_1.default();
+    }
+    login(payload) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const isUserRegistered = yield this.userRepo.isUserRegistered(payload);
+            if (isUserRegistered) {
+                return "testToken:190561756138456197418347194";
+            }
+            else {
+                throw "not registered";
+            }
+        });
+    }
+}
+exports.default = UserService;
+//# sourceMappingURL=userService.js.map
