@@ -6,7 +6,7 @@ class SQLZ {
     constructor() { }
     static getInstance() {
         if (!SQLZ.sequelize) {
-            SQLZ.sequelize = new sequelize_1.Sequelize("film-db", "root", "password", {
+            SQLZ.sequelize = new sequelize_1.Sequelize("film-db-new", "root", "password", {
                 dialect: "mysql",
             });
         }

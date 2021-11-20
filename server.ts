@@ -6,8 +6,20 @@ const app = createExpressServer({
   controllers: [AppController],
   cors: true,
   authorizationChecker: async (action: Action, roles: string[]) => {
-    const token = action.request.headers["testtoken"];
-    return token === "testToken:190561756138456197418347194";
+    const jwt = require("jsonwebtoken");
+    const token = action.request.headers["authorization"].split(" ")[1];
+    let isValid: boolean = false;
+
+    jwt.verify(token, "test", (err: any, user: any) => {
+      if (err) {
+        return;
+      } else {
+        action.request.userId = user.userId;
+        isValid = true;
+      }
+    });
+
+    return isValid;
   },
 });
 

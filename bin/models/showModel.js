@@ -27,9 +27,6 @@ showModel.init({
     prod_year: {
         type: sequelize_1.DataTypes.NUMBER,
     },
-    rating: {
-        type: sequelize_1.DataTypes.NUMBER,
-    },
     duration: {
         type: sequelize_1.DataTypes.NUMBER,
     },

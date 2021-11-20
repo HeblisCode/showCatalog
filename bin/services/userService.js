@@ -16,18 +16,41 @@ const userRepo_1 = __importDefault(require("../repository/userRepo"));
 class UserService {
     constructor() {
         this.userRepo = new userRepo_1.default();
+        this.bcrypt = require("bcrypt");
     }
     login(payload) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = yield this.userRepo.findUser(payload);
-            if (user.userFound) {
-                return {
-                    token: "testToken:190561756138456197418347194",
-                    userId: user.userId,
-                };
+            const user = yield this.userRepo.findUserByEmail(payload.email);
+            if (!user) {
+                throw new Error("user not found");
             }
-            else {
-                throw "not registered";
+            try {
+                const isPwCorrect = yield this.bcrypt.compare(payload.password, user.password);
+                if (isPwCorrect) {
+                    return { userId: user.id };
+                }
+                else {
+                    throw new Error("incorrect password");
+                }
+            }
+            catch (_a) {
+                throw new Error("bcrypt error");
+            }
+        });
+    }
+    register(payload) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const hashedPassword = yield this.bcrypt.hash(payload.password, 10);
+                const user = {
+                    email: payload.email,
+                    password: hashedPassword,
+                    age: payload.age,
+                };
+                return this.userRepo.registerUser(user);
+            }
+            catch (_a) {
+                throw new Error("bcrypt error");
             }
         });
     }

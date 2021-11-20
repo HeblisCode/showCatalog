@@ -6,7 +6,7 @@ export class SQLZ {
 
   static getInstance() {
     if (!SQLZ.sequelize) {
-      SQLZ.sequelize = new Sequelize("film-db", "root", "password", {
+      SQLZ.sequelize = new Sequelize("film-db-new", "root", "password", {
         dialect: "mysql",
       });
     }

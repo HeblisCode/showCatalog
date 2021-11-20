@@ -9,7 +9,6 @@ interface showModelAttributes {
   genre: string;
   nation: string;
   prod_year: number;
-  rating: number;
   duration: number;
   directed_by: string;
   abstract: string;
@@ -31,7 +30,6 @@ export default class showModel extends Model<
   public genre: string;
   public nation: string;
   public prod_year: number;
-  public rating: number;
   public duration: number;
   public directed_by: string;
   public abstract: string;
@@ -61,9 +59,6 @@ showModel.init(
       type: DataTypes.STRING,
     },
     prod_year: {
-      type: DataTypes.NUMBER,
-    },
-    rating: {
       type: DataTypes.NUMBER,
     },
     duration: {

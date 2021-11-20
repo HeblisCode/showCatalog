@@ -6,7 +6,8 @@ const sequelize = SQLZ.getInstance();
 interface userModelAttributes {
   id: number;
   email: string;
-  password: number;
+  password: string;
+  age: number;
 }
 
 export interface userModelCreationAttributes
@@ -17,8 +18,9 @@ export default class userModel extends Model<
   userModelCreationAttributes
 > {
   public id: number;
-  public email: number;
-  public password: number;
+  public email: string;
+  public password: string;
+  public age: number;
 }
 userModel.init(
   {
@@ -32,6 +34,9 @@ userModel.init(
     },
     password: {
       type: DataTypes.STRING,
+    },
+    age: {
+      type: DataTypes.INTEGER,
     },
   },
   { sequelize, tableName: "user", timestamps: false, underscored: true }

@@ -13,7 +13,7 @@ import {
   Authorized,
 } from "routing-controllers";
 import { userModelCreationAttributes } from "../models/userModel";
-import UserRepo, { User } from "../repository/userRepo";
+import UserRepo, { LoginData } from "../repository/userRepo";
 import showService from "../services/showService";
 import UserService, { tokenAndId } from "../services/userService";
 
@@ -21,12 +21,15 @@ import UserService, { tokenAndId } from "../services/userService";
 export class AppController {
   private service = new showService();
   private userService = new UserService();
+  private jwt = require("jsonwebtoken");
 
-  /*
-  + http://localhost:3000/show
-  +
-  + http://localhost:3000/show?page=3&limit=1
-  */
+  /**
+   * http://localhost:3000/show
+   * OR
+   * http://localhost:3000/show?page=3&limit=1
+   *
+   * @returns paginated shows
+   */
   @Get("/show")
   async getAll(@Req() request: any, @Res() response: any) {
     const page: number = +request.query?.page;
@@ -41,7 +44,7 @@ export class AppController {
   */
   @Authorized()
   @Get("/show/detail/:showId")
-  async getShowDetail(@Param("showId") showId: number) {
+  async getShowDetail(@Param("showId") showId: number, @Req() req: any) {
     return await this.service.getShowDetail(showId);
   }
 
@@ -51,10 +54,9 @@ export class AppController {
   + requires Body {email: string, password: string}
   */
   @Post("/user/register")
-  registerUser(@Body() payload: userModelCreationAttributes) {
-    const repo = new UserRepo();
+  async registerUser(@Body() payload: userModelCreationAttributes) {
     try {
-      repo.registerUser(payload);
+      this.userService.register(payload);
       return { status: 200 };
     } catch (err) {
       return { status: 500, err: err.stack };
@@ -66,13 +68,16 @@ export class AppController {
   + 
   + requires Body {email: string, password: string}
   */
-  @Get("/user/login")
-  async login(@Body() payload: User) {
+  @Post("/user/login")
+  async login(@Body() payload: LoginData) {
     try {
-      const data: tokenAndId = await this.userService.login(payload);
-      return { staus: 200, token: data.token, id: data.userId };
+      const userIdJson: { userId: number } = await this.userService.login(
+        payload
+      );
+      const bearerToken: string = "Bearer " + this.jwt.sign(userIdJson, "test");
+      return bearerToken;
     } catch (err) {
-      return { status: 401 };
+      return { status: 401, message: err.message };
     }
   }
 

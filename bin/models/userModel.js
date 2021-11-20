@@ -18,5 +18,8 @@ userModel.init({
     password: {
         type: sequelize_1.DataTypes.STRING,
     },
+    age: {
+        type: sequelize_1.DataTypes.INTEGER,
+    },
 }, { sequelize, tableName: "user", timestamps: false, underscored: true });
 //# sourceMappingURL=userModel.js.map

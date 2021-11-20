@@ -1,18 +1,45 @@
-import userModel from "../models/userModel";
-import UserRepo, { LoginBody, User } from "../repository/userRepo";
+import userModel, { userModelCreationAttributes } from "../models/userModel";
+import UserRepo, { LoginBody, LoginData } from "../repository/userRepo";
 
 export default class UserService {
   private userRepo: UserRepo = new UserRepo();
+  private bcrypt = require("bcrypt");
 
-  async login(payload: User): Promise<tokenAndId> {
-    const user: LoginBody = await this.userRepo.findUser(payload);
-    if (user.userFound) {
-      return {
-        token: "testToken:190561756138456197418347194",
-        userId: user.userId,
+  async login(payload: LoginData) {
+    const user: userModel = await this.userRepo.findUserByEmail(payload.email);
+    if (!user) {
+      throw new Error("user not found");
+    }
+    try {
+      const isPwCorrect = await this.bcrypt.compare(
+        payload.password,
+        user.password
+      );
+      if (isPwCorrect) {
+        return { userId: user.id };
+      } else {
+        throw new Error("incorrect password");
+      }
+    } catch {
+      throw new Error("bcrypt error");
+    }
+  }
+
+  async register(payload: userModelCreationAttributes) {
+    try {
+      //pw encryption
+      const hashedPassword: string = await this.bcrypt.hash(
+        payload.password,
+        10
+      );
+      const user: userModelCreationAttributes = {
+        email: payload.email,
+        password: hashedPassword,
+        age: payload.age,
       };
-    } else {
-      throw "not registered";
+      return this.userRepo.registerUser(user);
+    } catch {
+      throw new Error("bcrypt error");
     }
   }
 

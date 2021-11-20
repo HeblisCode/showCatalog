@@ -6,8 +6,8 @@ import userModel, { userModelCreationAttributes } from "../models/userModel";
 export default class UserRepo {
   constructor() {}
 
-  registerUser(payload: userModelCreationAttributes) {
-    userModel.create(payload);
+  async registerUser(user: userModelCreationAttributes) {
+    return userModel.create(user);
   }
 
   setShowAsFavorite(showId: number, userId: number) {
@@ -18,18 +18,15 @@ export default class UserRepo {
     ratingModel.create({ rate: rate, show_id: showId, user_id: userId });
   }
 
-  async findUser(payload: User): Promise<LoginBody> {
-    const user: userModel[] = await userModel.findAll({
-      where: { email: payload.email, password: payload.password },
+  async findUserByEmail(email: string): Promise<userModel> {
+    const user: userModel = await userModel.findOne({
+      where: { email: email },
     });
-    return {
-      userFound: user.length > 0,
-      userId: user[0]?.id,
-    };
+    return user;
   }
 }
 
-export interface User {
+export interface LoginData {
   email: string;
   password: string;
 }
