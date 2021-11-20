@@ -36,9 +36,7 @@ class ShowRepo {
     }
     getShowById(showId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const model = yield showModel_1.default.findByPk(showId, { raw: true });
-            console.log(model);
-            return model;
+            return showModel_1.default.findByPk(showId, { raw: true });
         });
     }
     getFilm(showId) {

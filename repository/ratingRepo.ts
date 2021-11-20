@@ -1,7 +1,40 @@
-import ratingModel from "../models/ratingModel";
+import ratingModel, {
+  ratingModelCreationAttributes,
+} from "../models/ratingModel";
 
 export default class RatingRepo {
-  rateShow(rate: number, showId: number, userId: number) {
-    ratingModel.create({ rate: rate, show_id: showId, user_id: userId });
+  /**
+   *
+   * @param rate
+   * @param showId
+   * @param userId
+   * @description creates a new rate entry
+   *
+   */
+  async rateShow(rating: ratingModelCreationAttributes) {
+    return ratingModel.create(rating);
+  }
+
+  /**
+   *
+   * @param showId
+   * @returns `Promise<number>`
+   * @description `returns the avg votes for a given showId`
+   *
+   */
+  async evalAvgShowRating(showId: number): Promise<number> {
+    const totalVotes: number = await ratingModel.count({
+      where: { show_id: showId },
+    });
+    const votes: ratingModel[] = await ratingModel.findAll({
+      where: { show_id: showId },
+    });
+    const votesSum: number = votes.reduce(
+      (acc: number, el: ratingModel): number => {
+        return acc + el.rate;
+      },
+      0
+    );
+    return votesSum / totalVotes;
   }
 }

@@ -12,7 +12,7 @@ interface ratingModelAttributes {
   rate: number;
 }
 
-interface ratingModelCreationAttributes
+export interface ratingModelCreationAttributes
   extends Optional<ratingModelAttributes, "id"> {}
 
 export default class ratingModel extends Model<

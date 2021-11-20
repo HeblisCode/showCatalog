@@ -5,14 +5,23 @@ export default class UserService {
   private userRepo: UserRepo = new UserRepo();
   private bcrypt = require("bcrypt");
 
-  async login(payload: LoginData) {
-    const user: userModel = await this.userRepo.findUserByEmail(payload.email);
+  /**
+   *
+   * @param `loginData: LoginData`
+   * @returns `Promise<{ userId: number }>`
+   * @description `returns an object with the user id if the pw is correct, otherwise throws an error`
+   *
+   */
+  async login(loginData: LoginData): Promise<{ userId: number }> {
+    const user: userModel = await this.userRepo.findUserByEmail(
+      loginData.email
+    );
     if (!user) {
       throw new Error("user not found");
     }
     try {
       const isPwCorrect = await this.bcrypt.compare(
-        payload.password,
+        loginData.password,
         user.password
       );
       if (isPwCorrect) {
@@ -25,9 +34,15 @@ export default class UserService {
     }
   }
 
+  /**
+   *
+   * @param `payload`
+   * @description `register a new user and encrypt the password`
+   *
+   */
   async register(payload: userModelCreationAttributes) {
     try {
-      //pw encryption
+      //pw encryption with bcrypt
       const hashedPassword: string = await this.bcrypt.hash(
         payload.password,
         10
@@ -37,21 +52,9 @@ export default class UserService {
         password: hashedPassword,
         age: payload.age,
       };
-      return this.userRepo.registerUser(user);
+      this.userRepo.registerUser(user);
     } catch {
       throw new Error("bcrypt error");
     }
   }
-
-  // async rateShow(rate: number, userId: number, showId: number) {
-  //   if (rate < 0 || rate > 5) {
-  //     throw "Input error: field rate must be between 0 and 5";
-  //   }
-  //   this.userRepo.rateShow(rate, userId, showId);
-  // }
-}
-
-export interface tokenAndId {
-  token: string;
-  userId: number;
 }

@@ -18,14 +18,14 @@ class UserService {
         this.userRepo = new userRepo_1.default();
         this.bcrypt = require("bcrypt");
     }
-    login(payload) {
+    login(loginData) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = yield this.userRepo.findUserByEmail(payload.email);
+            const user = yield this.userRepo.findUserByEmail(loginData.email);
             if (!user) {
                 throw new Error("user not found");
             }
             try {
-                const isPwCorrect = yield this.bcrypt.compare(payload.password, user.password);
+                const isPwCorrect = yield this.bcrypt.compare(loginData.password, user.password);
                 if (isPwCorrect) {
                     return { userId: user.id };
                 }
@@ -47,7 +47,7 @@ class UserService {
                     password: hashedPassword,
                     age: payload.age,
                 };
-                return this.userRepo.registerUser(user);
+                this.userRepo.registerUser(user);
             }
             catch (_a) {
                 throw new Error("bcrypt error");

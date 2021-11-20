@@ -1,9 +1,17 @@
 import { Action, createExpressServer } from "routing-controllers";
 import "reflect-metadata";
-import { AppController } from "./controllers/appController";
+import { ShowController } from "./controllers/showController";
+import { UserController } from "./controllers/userController";
+import { RatingController } from "./controllers/ratingController";
+import { FavoriteController } from "./controllers/favoriteController";
 
 const app = createExpressServer({
-  controllers: [AppController],
+  controllers: [
+    ShowController,
+    UserController,
+    RatingController,
+    FavoriteController,
+  ],
   cors: true,
   authorizationChecker: checkJwtToken,
 });
