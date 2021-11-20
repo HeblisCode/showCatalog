@@ -41,7 +41,7 @@ let AppController = class AppController {
     }
     getShowDetail(showId, req) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log("this is also the user id:", req === null || req === void 0 ? void 0 : req.userId);
+            console.log(showId);
             return yield this.service.getShowDetail(showId);
         });
     }
@@ -68,21 +68,6 @@ let AppController = class AppController {
             }
         });
     }
-    rateShow(request, response) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const userId = request.headers["userinfo"];
-                const showId = request.params["showId"];
-                const rate = request.params["rate"];
-                console.log(userId, showId, rate);
-                yield this.userService.rateShow(rate, userId, showId);
-                return {};
-            }
-            catch (err) {
-                return response.sendStatus(500);
-            }
-        });
-    }
 };
 __decorate([
     (0, routing_controllers_1.Get)("/show"),
@@ -103,12 +88,6 @@ __decorate([
     (0, routing_controllers_1.Post)("/user/login"),
     __param(0, (0, routing_controllers_1.Body)())
 ], AppController.prototype, "login", null);
-__decorate([
-    (0, routing_controllers_1.Authorized)(),
-    (0, routing_controllers_1.Post)("/show/vote/:rate/:showId"),
-    __param(0, (0, routing_controllers_1.Req)()),
-    __param(1, (0, routing_controllers_1.Res)())
-], AppController.prototype, "rateShow", null);
 AppController = __decorate([
     (0, routing_controllers_1.JsonController)()
 ], AppController);

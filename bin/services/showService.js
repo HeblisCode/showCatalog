@@ -46,51 +46,48 @@ class showService {
                     episodes: episodes,
                 };
             })));
-            return show.map((el) => {
-                return {
-                    id: el.id,
-                    title: el.title,
-                    genre: el.genre,
-                    nation: el.nation,
-                    prodYear: el.prod_year,
-                    duration: el.duration,
-                    directedBy: el.directed_by,
-                    abstract: el.abstract,
-                    imageURL: el.image_url,
-                    hasSeasons: !!el.has_seasons,
-                    totalSeason: el.total_seasons,
-                    minAge: el.min_age,
-                    seasons: mappedSeasons,
-                };
-            });
+            return {
+                id: show.id,
+                title: show.title,
+                genre: show.genre,
+                nation: show.nation,
+                prodYear: show.prod_year,
+                duration: show.duration,
+                directedBy: show.directed_by,
+                abstract: show.abstract,
+                imageURL: show.image_url,
+                hasSeasons: !!show.has_seasons,
+                totalSeason: show.total_seasons,
+                minAge: show.min_age,
+                seasons: mappedSeasons,
+            };
         });
     }
-    getFilmByShow(reqShowId) {
+    getFilmByShow(showId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const data = yield this.repository.getFilm(reqShowId);
-            return data.map((film) => {
-                return {
-                    id: film.id,
-                    title: film.title,
-                    genre: film.genre,
-                    nation: film.nation,
-                    prodYear: film.prod_year,
-                    duration: film.duration,
-                    directedBy: film.directed_by,
-                    abstract: film.abstract,
-                    imageURL: film.image_url,
-                    hasSeasons: !!film.has_seasons,
-                    totalSeason: film.total_seasons,
-                    minAge: film.min_age,
-                    URL: film["filmModel.url"],
-                };
-            });
+            const show = yield this.repository.getShowById(showId);
+            const film = yield this.repository.getFilm(showId);
+            console.log(show);
+            return {
+                id: show.id,
+                title: show.title,
+                genre: show.genre,
+                nation: show.nation,
+                prodYear: show.prod_year,
+                duration: show.duration,
+                directedBy: show.directed_by,
+                abstract: show.abstract,
+                imageURL: show.image_url,
+                hasSeasons: !!show.has_seasons,
+                totalSeason: show.total_seasons,
+                minAge: show.min_age,
+                URL: film.url,
+            };
         });
     }
     getShowDetail(showId) {
         return __awaiter(this, void 0, void 0, function* () {
             const hasSeasons = yield this.repository.hasSeasons(showId);
-            console.log(hasSeasons);
             if (hasSeasons) {
                 return this.getSerieByShow(showId);
             }

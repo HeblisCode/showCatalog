@@ -9,6 +9,8 @@ interface episodeModelAttributes {
   url: string;
   season_id: number;
   episode_number: number;
+  title: string;
+  duration: number;
 }
 
 interface episodeModelCreationAttributes
@@ -21,6 +23,8 @@ export default class episodeModel extends Model<
   public id: number;
   public url: string;
   public show_id: string;
+  public title: string;
+  public duration: number;
 }
 episodeModel.init(
   {
@@ -36,6 +40,12 @@ episodeModel.init(
       type: DataTypes.INTEGER,
     },
     episode_number: {
+      type: DataTypes.INTEGER,
+    },
+    title: {
+      type: DataTypes.STRING,
+    },
+    duration: {
       type: DataTypes.INTEGER,
     },
   },

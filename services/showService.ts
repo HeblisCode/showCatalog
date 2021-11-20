@@ -1,3 +1,5 @@
+import filmModel from "../models/filmModel";
+import showModel from "../models/showModel";
 import ShowRepo from "../repository/showRepo";
 
 export default class showService {
@@ -35,51 +37,48 @@ export default class showService {
       })
     );
 
-    return show.map((el: any) => {
-      return {
-        id: el.id,
-        title: el.title,
-        genre: el.genre,
-        nation: el.nation,
-        prodYear: el.prod_year,
-        // rating: el.rating,
-        duration: el.duration,
-        directedBy: el.directed_by,
-        abstract: el.abstract,
-        imageURL: el.image_url,
-        hasSeasons: !!el.has_seasons,
-        totalSeason: el.total_seasons,
-        minAge: el.min_age,
-        seasons: mappedSeasons,
-      };
-    });
+    return {
+      id: show.id,
+      title: show.title,
+      genre: show.genre,
+      nation: show.nation,
+      prodYear: show.prod_year,
+      // rating: show.rating,
+      duration: show.duration,
+      directedBy: show.directed_by,
+      abstract: show.abstract,
+      imageURL: show.image_url,
+      hasSeasons: !!show.has_seasons,
+      totalSeason: show.total_seasons,
+      minAge: show.min_age,
+      seasons: mappedSeasons,
+    };
   }
 
-  public async getFilmByShow(reqShowId: number) {
-    const data: any = await this.repository.getFilm(reqShowId);
-    return data.map((film: any) => {
-      return {
-        id: film.id,
-        title: film.title,
-        genre: film.genre,
-        nation: film.nation,
-        prodYear: film.prod_year,
-        // rating: film.rating,
-        duration: film.duration,
-        directedBy: film.directed_by,
-        abstract: film.abstract,
-        imageURL: film.image_url,
-        hasSeasons: !!film.has_seasons,
-        totalSeason: film.total_seasons,
-        minAge: film.min_age,
-        URL: film["filmModel.url"],
-      };
-    });
+  public async getFilmByShow(showId: number) {
+    const show: showModel = await this.repository.getShowById(showId);
+    const film: filmModel = await this.repository.getFilm(showId);
+    console.log(show);
+    return {
+      id: show.id,
+      title: show.title,
+      genre: show.genre,
+      nation: show.nation,
+      prodYear: show.prod_year,
+      // rating: show.rating,
+      duration: show.duration,
+      directedBy: show.directed_by,
+      abstract: show.abstract,
+      imageURL: show.image_url,
+      hasSeasons: !!show.has_seasons,
+      totalSeason: show.total_seasons,
+      minAge: show.min_age,
+      URL: film.url,
+    };
   }
 
   public async getShowDetail(showId: number) {
     const hasSeasons: boolean = await this.repository.hasSeasons(showId);
-    console.log(hasSeasons);
     if (hasSeasons) {
       return this.getSerieByShow(showId);
     } else {

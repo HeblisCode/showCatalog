@@ -25,6 +25,12 @@ episodeModel.init({
     episode_number: {
         type: sequelize_1.DataTypes.INTEGER,
     },
+    title: {
+        type: sequelize_1.DataTypes.STRING,
+    },
+    duration: {
+        type: sequelize_1.DataTypes.INTEGER,
+    },
 }, { sequelize, tableName: "episode", timestamps: false, underscored: true });
 episodeModel.belongsTo(seasonModel_1.default, { foreignKey: "season_id" });
 seasonModel_1.default.hasOne(episodeModel, { foreignKey: "season_id" });

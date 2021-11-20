@@ -36,41 +36,41 @@ class ShowRepo {
     }
     getShowById(showId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return showModel_1.default.findAll({ raw: true, where: { id: showId } });
+            const model = yield showModel_1.default.findByPk(showId, { raw: true });
+            console.log(model);
+            return model;
         });
     }
-    getFilm(reqShowId) {
+    getFilm(showId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return showModel_1.default.findAll({
-                include: [
-                    { model: filmModel_1.default, required: true, where: { show_id: reqShowId } },
-                ],
+            return filmModel_1.default.findOne({
+                where: { show_id: showId },
                 raw: true,
             });
         });
     }
-    getSeasons(reqShowId) {
+    getSeasons(showId) {
         return __awaiter(this, void 0, void 0, function* () {
             return seasonModel_1.default.findAll({
                 attributes: ["season_number", "id"],
-                where: { show_id: reqShowId },
+                where: { show_id: showId },
                 raw: true,
             });
         });
     }
-    getEpisodes(reqSeasonId) {
+    getEpisodes(seasonId) {
         return __awaiter(this, void 0, void 0, function* () {
             return episodeModel_1.default.findAll({
-                attributes: ["episode_number", "id", "url"],
                 raw: true,
-                where: { season_id: reqSeasonId },
+                where: { season_id: seasonId },
+                attributes: { exclude: ["season_id"] },
             });
         });
     }
-    hasSeasons(reqShowId) {
+    hasSeasons(showId) {
         return __awaiter(this, void 0, void 0, function* () {
             const data = yield showModel_1.default.findAll({
-                where: { id: reqShowId },
+                where: { id: showId },
                 raw: true,
             });
             return !!data[0].has_seasons;

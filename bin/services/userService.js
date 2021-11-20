@@ -54,14 +54,6 @@ class UserService {
             }
         });
     }
-    rateShow(rate, userId, showId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (rate < 0 || rate > 5) {
-                throw "Input error: field rate must be between 0 and 5";
-            }
-            this.userRepo.rateShow(rate, userId, showId);
-        });
-    }
 }
 exports.default = UserService;
 //# sourceMappingURL=userService.js.map

@@ -1,5 +1,5 @@
 import userModel, { userModelCreationAttributes } from "../models/userModel";
-import UserRepo, { LoginBody, LoginData } from "../repository/userRepo";
+import UserRepo from "../repository/userRepo";
 
 export default class UserService {
   private userRepo: UserRepo = new UserRepo();
@@ -43,12 +43,12 @@ export default class UserService {
     }
   }
 
-  async rateShow(rate: number, userId: number, showId: number) {
-    if (rate < 0 || rate > 5) {
-      throw "Input error: field rate must be between 0 and 5";
-    }
-    this.userRepo.rateShow(rate, userId, showId);
-  }
+  // async rateShow(rate: number, userId: number, showId: number) {
+  //   if (rate < 0 || rate > 5) {
+  //     throw "Input error: field rate must be between 0 and 5";
+  //   }
+  //   this.userRepo.rateShow(rate, userId, showId);
+  // }
 }
 
 export interface tokenAndId {

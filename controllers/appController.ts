@@ -13,7 +13,6 @@ import {
   Authorized,
 } from "routing-controllers";
 import { userModelCreationAttributes } from "../models/userModel";
-import UserRepo, { LoginData } from "../repository/userRepo";
 import showService from "../services/showService";
 import UserService, { tokenAndId } from "../services/userService";
 
@@ -45,6 +44,7 @@ export class AppController {
   @Authorized()
   @Get("/show/detail/:showId")
   async getShowDetail(@Param("showId") showId: number, @Req() req: any) {
+    console.log(showId);
     return await this.service.getShowDetail(showId);
   }
 
@@ -81,18 +81,18 @@ export class AppController {
     }
   }
 
-  @Authorized()
-  @Post("/show/vote/:rate/:showId")
-  async rateShow(@Req() request: any, @Res() response: any) {
-    try {
-      const userId: number = request.headers["userinfo"];
-      const showId: number = request.params["showId"];
-      const rate: number = request.params["rate"];
-      console.log(userId, showId, rate);
-      await this.userService.rateShow(rate, userId, showId);
-      return {};
-    } catch (err) {
-      return response.sendStatus(500);
-    }
-  }
+  // @Authorized()
+  // @Post("/show/vote/:rate/:showId")
+  // async rateShow(@Req() request: any, @Res() response: any) {
+  //   try {
+  //     const userId: number = request.headers["userinfo"];
+  //     const showId: number = request.params["showId"];
+  //     const rate: number = request.params["rate"];
+  //     console.log(userId, showId, rate);
+  //     await this.userService.rateShow(rate, userId, showId);
+  //     return {};
+  //   } catch (err) {
+  //     return response.sendStatus(500);
+  //   }
+  // }
 }

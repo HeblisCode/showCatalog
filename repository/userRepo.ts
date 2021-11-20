@@ -1,37 +1,29 @@
-import { where } from "sequelize";
-import favoriteModel from "../models/favoriteModel";
-import ratingModel from "../models/ratingModel";
 import userModel, { userModelCreationAttributes } from "../models/userModel";
 
 export default class UserRepo {
   constructor() {}
 
-  async registerUser(user: userModelCreationAttributes) {
+  /**
+   *
+   * @param user `{email: string, password: string, age: number}`
+   * @description register a new user
+   *
+   */
+  async registerUser(user: userModelCreationAttributes): Promise<userModel> {
     return userModel.create(user);
   }
 
-  setShowAsFavorite(showId: number, userId: number) {
-    favoriteModel.create({ show_id: showId, user_id: userId });
-  }
-
-  rateShow(rate: number, showId: number, userId: number) {
-    ratingModel.create({ rate: rate, show_id: showId, user_id: userId });
-  }
-
+  /**
+   *
+   * @param user `email: string`
+   * @returns `Promise<userModel>`
+   * @description find an existing user by mail
+   *
+   */
   async findUserByEmail(email: string): Promise<userModel> {
     const user: userModel = await userModel.findOne({
       where: { email: email },
     });
     return user;
   }
-}
-
-export interface LoginData {
-  email: string;
-  password: string;
-}
-
-export interface LoginBody {
-  userFound: boolean;
-  userId?: number;
 }

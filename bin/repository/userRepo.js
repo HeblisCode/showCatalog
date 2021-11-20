@@ -12,8 +12,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const favoriteModel_1 = __importDefault(require("../models/favoriteModel"));
-const ratingModel_1 = __importDefault(require("../models/ratingModel"));
 const userModel_1 = __importDefault(require("../models/userModel"));
 class UserRepo {
     constructor() { }
@@ -21,12 +19,6 @@ class UserRepo {
         return __awaiter(this, void 0, void 0, function* () {
             return userModel_1.default.create(user);
         });
-    }
-    setShowAsFavorite(showId, userId) {
-        favoriteModel_1.default.create({ show_id: showId, user_id: userId });
-    }
-    rateShow(rate, showId, userId) {
-        ratingModel_1.default.create({ rate: rate, show_id: showId, user_id: userId });
     }
     findUserByEmail(email) {
         return __awaiter(this, void 0, void 0, function* () {

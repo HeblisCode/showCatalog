@@ -1,14 +1,35 @@
-declare type Show = {
+declare type LoginData = {
+  email: string;
+  password: string;
+};
+
+declare type ShowDetailJSONResponse = {
   id: number;
   title: string;
   genre: string;
   nation: string;
-  prod_year: number;
-  rating: number;
-  duration: number;
-  directed_by: string;
+  prodYear: string;
+  rating: string;
+  duration: number | null;
+  directedBy: string | null;
   abstract: string;
-  has_seasons: boolean;
-  total_seasons: number;
-  min_age: number;
+  imageURL: string;
+  hasSeasons: boolean;
+  totalSeason: number | null;
+  url: string | null;
+  minAge: number | null;
+  seasons: SeasonJSONResponse[];
+};
+
+declare type SeasonJSONResponse = {
+  seasonNumber: number;
+  id: number;
+  episodes: EpisodeJSONResponse[];
+};
+
+declare type EpisodeJSONResponse = {
+  id: number;
+  title: string;
+  duration: number;
+  url: string;
 };
