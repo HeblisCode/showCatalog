@@ -1,24 +1,33 @@
+import { values } from "sequelize/types/lib/operators";
 import episodeModel from "../models/episodeModel";
+import favoriteModel from "../models/favoriteModel";
 import filmModel from "../models/filmModel";
 import seasonModel from "../models/seasonModel";
 import showModel from "../models/showModel";
+import { SQLZ } from "../utils/SQLZ";
 
 export default class ShowRepo {
   constructor() {}
 
   /**
+   *
    * @param: `none`
    * @return: `Promise<showModel[]>`
    * @description: `returns an array with all the shows`
+   *
    */
   public async getAllShow(): Promise<showModel[]> {
-    return showModel.findAll({ raw: true });
+    return showModel.findAll({
+      raw: true,
+    });
   }
 
   /**
+   *
    * @param: `page: number, limit: number`
    * @return: `Promise<showModel[]>`
    * @description: `returns a paginated array of shows`
+   *
    */
   public async getAllShowPaginated(
     page: number,
@@ -29,27 +38,33 @@ export default class ShowRepo {
   }
 
   /**
+   *
    * @param: `none`
    * @return: `Promise<number>`
    * @description: `returns the total number of shows`
+   *
    */
   public async getTotalShow(): Promise<number> {
     return showModel.count();
   }
 
   /**
+   *
    * @param: `showId: number`
    * @return: `Promise<showModel>`
    * @description: `returns the a show`
+   *
    */
   public async getShowById(showId: number): Promise<showModel> {
     return showModel.findByPk(showId, { raw: true });
   }
 
   /**
+   *
    * @param `showId: number`
    * @returns `Promise<filmModel>`
    * @description takes a show id and return the corresponding film
+   *
    */
   public async getFilm(showId: number): Promise<filmModel> {
     return filmModel.findOne({
@@ -59,9 +74,11 @@ export default class ShowRepo {
   }
 
   /**
+   *
    * @param `showId: number`
    * @returns `Promise<seasonModel[]>`
    * @description takes a show id and return all its seasons
+   *
    */
   public async getSeasons(showId: number): Promise<seasonModel[]> {
     return seasonModel.findAll({
@@ -72,9 +89,11 @@ export default class ShowRepo {
   }
 
   /**
+   *
    * @param `seasonId: number`
    * @returns `Promise<episodeModel[]>`
    * @description takes a season id and return all its episodes
+   *
    */
   public async getEpisodes(seasonId: number): Promise<episodeModel[]> {
     return episodeModel.findAll({
@@ -85,9 +104,11 @@ export default class ShowRepo {
   }
 
   /**
+   *
    * @param `showId: number`
    * @returns `Promise<boolean>`
    * @description returns true if the show has seasons
+   *
    */
   public async hasSeasons(showId: number): Promise<boolean> {
     const data = await showModel.findAll({
@@ -95,5 +116,35 @@ export default class ShowRepo {
       raw: true,
     });
     return !!data[0].has_seasons;
+  }
+
+  /**
+   *
+   * @param showId
+   * @param newRating
+   * @description `updates a show rating column`
+   *
+   */
+  public async updateShowRating(showId: number, newRating: number) {
+    //showModel.update is not working as intended, i'm using a raw query while i try to solve this
+    SQLZ.getInstance().query(
+      "UPDATE `show` SET rating = " + newRating + " WHERE id = " + showId
+    );
+  }
+
+  /**
+   *
+   * @param userId
+   * @description `returns an array with all the favorites`
+   *
+   */
+  public async getFavorites(userId: number) {
+    return showModel.findAll({
+      include: {
+        model: favoriteModel,
+        where: { user_id: userId },
+      },
+      raw: true,
+    });
   }
 }

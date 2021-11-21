@@ -15,6 +15,18 @@ export default class showService {
       list = await this.repository.getAllShow();
     }
 
+    list = list.map((show: showModel) => {
+      return {
+        id: show.id,
+        title: show.title,
+        genre: show.genre,
+        rating: show.rating,
+        duration: show.duration,
+        imageURL: show.image_url,
+        minAge: show.min_age,
+      };
+    });
+
     return {
       list,
       total,
@@ -43,7 +55,7 @@ export default class showService {
       genre: show.genre,
       nation: show.nation,
       prodYear: show.prod_year,
-      // rating: show.rating,
+      rating: show.rating,
       duration: show.duration,
       directedBy: show.directed_by,
       abstract: show.abstract,
@@ -65,7 +77,7 @@ export default class showService {
       genre: show.genre,
       nation: show.nation,
       prodYear: show.prod_year,
-      // rating: show.rating,
+      rating: show.rating,
       duration: show.duration,
       directedBy: show.directed_by,
       abstract: show.abstract,
@@ -84,5 +96,24 @@ export default class showService {
     } else {
       return this.getFilmByShow(showId);
     }
+  }
+
+  public async updateShowRating(showId: number, newRating: number) {
+    return this.repository.updateShowRating(showId, newRating);
+  }
+
+  public async getFavorites(userId: number) {
+    const shows: showModel[] = await this.repository.getFavorites(userId);
+    return shows.map((show: showModel) => {
+      return {
+        id: show.id,
+        title: show.title,
+        genre: show.genre,
+        rating: show.rating,
+        duration: show.duration,
+        imageURL: show.image_url,
+        minAge: show.min_age,
+      };
+    });
   }
 }

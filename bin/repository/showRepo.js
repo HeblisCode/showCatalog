@@ -13,14 +13,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const episodeModel_1 = __importDefault(require("../models/episodeModel"));
+const favoriteModel_1 = __importDefault(require("../models/favoriteModel"));
 const filmModel_1 = __importDefault(require("../models/filmModel"));
 const seasonModel_1 = __importDefault(require("../models/seasonModel"));
 const showModel_1 = __importDefault(require("../models/showModel"));
+const SQLZ_1 = require("../utils/SQLZ");
 class ShowRepo {
     constructor() { }
     getAllShow() {
         return __awaiter(this, void 0, void 0, function* () {
-            return showModel_1.default.findAll({ raw: true });
+            return showModel_1.default.findAll({
+                raw: true,
+            });
         });
     }
     getAllShowPaginated(page, limit) {
@@ -72,6 +76,22 @@ class ShowRepo {
                 raw: true,
             });
             return !!data[0].has_seasons;
+        });
+    }
+    updateShowRating(showId, newRating) {
+        return __awaiter(this, void 0, void 0, function* () {
+            SQLZ_1.SQLZ.getInstance().query("UPDATE `show` SET rating = " + newRating + " WHERE id = " + showId);
+        });
+    }
+    getFavorites(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return showModel_1.default.findAll({
+                include: {
+                    model: favoriteModel_1.default,
+                    where: { user_id: userId },
+                },
+                raw: true,
+            });
         });
     }
 }

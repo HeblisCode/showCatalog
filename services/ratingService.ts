@@ -6,15 +6,23 @@
 
 import { ratingModelCreationAttributes } from "../models/ratingModel";
 import RatingRepo from "../repository/ratingRepo";
+import showService from "./showService";
 
 // }
 export default class RatingService {
   private ratingRepo = new RatingRepo();
+  private showService = new showService();
 
   async rateShow(rating: ratingModelCreationAttributes) {
-    if (rating.rate < 0 || rating.rate > 5) {
-      throw new Error("Rate must be between 0 and 5");
-    }
-    return this.ratingRepo.rateShow(rating);
+    await this.ratingRepo.rateShow(rating);
+
+    //eval the new avg rating after the new vote
+    const newRating: number = await this.ratingRepo.evalAvgShowRating(
+      rating.show_id
+    );
+
+    await this.showService.updateShowRating(rating.show_id, newRating);
+
+    return { status: 200, message: "Ok" };
   }
 }

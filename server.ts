@@ -23,7 +23,7 @@ app.listen(3000, () => {
 
 async function checkJwtToken(action: Action) {
   const jwt = require("jsonwebtoken");
-  const token = action.request.headers["authorization"].split(" ")[1];
+  const token = action.request.headers["authorization"]?.split(" ")[1];
   let isValid: boolean = false;
 
   jwt.verify(token, "test", (err: any, user: any) => {

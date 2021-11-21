@@ -16,6 +16,7 @@ interface showModelAttributes {
   image_url: string;
   total_seasons: number | null;
   min_age: number | null;
+  rating: number;
 }
 
 interface showModelCreationAttributes
@@ -37,6 +38,7 @@ export default class showModel extends Model<
   public image_url: string;
   public total_seasons: number | null;
   public min_age: number | null;
+  public rating: number;
 
   public constructor() {
     super();
@@ -83,6 +85,9 @@ showModel.init(
     min_age: {
       type: DataTypes.NUMBER,
       allowNull: true,
+    },
+    rating: {
+      type: DataTypes.FLOAT,
     },
   },
   { sequelize, tableName: "show", timestamps: false }

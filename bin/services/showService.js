@@ -27,6 +27,17 @@ class showService {
             else {
                 list = yield this.repository.getAllShow();
             }
+            list = list.map((show) => {
+                return {
+                    id: show.id,
+                    title: show.title,
+                    genre: show.genre,
+                    rating: show.rating,
+                    duration: show.duration,
+                    imageURL: show.image_url,
+                    minAge: show.min_age,
+                };
+            });
             return {
                 list,
                 total,
@@ -52,6 +63,7 @@ class showService {
                 genre: show.genre,
                 nation: show.nation,
                 prodYear: show.prod_year,
+                rating: show.rating,
                 duration: show.duration,
                 directedBy: show.directed_by,
                 abstract: show.abstract,
@@ -74,6 +86,7 @@ class showService {
                 genre: show.genre,
                 nation: show.nation,
                 prodYear: show.prod_year,
+                rating: show.rating,
                 duration: show.duration,
                 directedBy: show.directed_by,
                 abstract: show.abstract,
@@ -94,6 +107,27 @@ class showService {
             else {
                 return this.getFilmByShow(showId);
             }
+        });
+    }
+    updateShowRating(showId, newRating) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.repository.updateShowRating(showId, newRating);
+        });
+    }
+    getFavorites(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const shows = yield this.repository.getFavorites(userId);
+            return shows.map((show) => {
+                return {
+                    id: show.id,
+                    title: show.title,
+                    genre: show.genre,
+                    rating: show.rating,
+                    duration: show.duration,
+                    imageURL: show.image_url,
+                    minAge: show.min_age,
+                };
+            });
         });
     }
 }

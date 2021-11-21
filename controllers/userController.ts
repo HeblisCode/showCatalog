@@ -17,9 +17,9 @@ export class UserController {
   async registerUser(@Body() payload: userModelCreationAttributes) {
     try {
       await this.userService.register(payload);
-      return { status: 200 };
+      return { status: 200, message: "OK" };
     } catch (err) {
-      return { status: 500, err: err.stack };
+      return { status: 500, message: err.message };
     }
   }
 
@@ -36,7 +36,7 @@ export class UserController {
         payload
       );
       const bearerToken: string = "Bearer " + this.jwt.sign(userIdJson, "test");
-      return bearerToken;
+      return { status: 200, token: bearerToken };
     } catch (err) {
       return { status: 401, message: err.message };
     }

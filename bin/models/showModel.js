@@ -50,5 +50,8 @@ showModel.init({
         type: sequelize_1.DataTypes.NUMBER,
         allowNull: true,
     },
+    rating: {
+        type: sequelize_1.DataTypes.FLOAT,
+    },
 }, { sequelize, tableName: "show", timestamps: false });
 //# sourceMappingURL=showModel.js.map
