@@ -5,6 +5,7 @@ import {
   Req,
   Authorized,
   Res,
+  Body,
 } from "routing-controllers";
 import { userModelCreationAttributes } from "../models/userModel";
 import FavoriteService from "../services/favoriteService";
@@ -24,11 +25,20 @@ export class ShowController {
    * @description paginated shows
    */
   @Get("/show")
-  async getAll(@Req() request: any) {
+  async getAll(@Req() request: any, @Body() filter: Filter) {
     const page: number = +request.query?.page;
     const limit: number = +request.query?.limit;
     try {
-      return await this.service.getAllShow(page, limit);
+      return await this.service.getAllShow(filter, page, limit);
+    } catch (err) {
+      return { status: 500, message: err.message };
+    }
+  }
+
+  @Get("/show/:title")
+  async getByTitle(@Param("title") title: string, @Body() filter: Filter) {
+    try {
+      return await this.service.getByTitle(title, filter);
     } catch (err) {
       return { status: 500, message: err.message };
     }

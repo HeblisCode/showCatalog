@@ -1,3 +1,4 @@
+import { Op } from "sequelize";
 import { values } from "sequelize/types/lib/operators";
 import episodeModel from "../models/episodeModel";
 import favoriteModel from "../models/favoriteModel";
@@ -16,9 +17,10 @@ export default class ShowRepo {
    * @description: `returns an array with all the shows`
    *
    */
-  public async getAllShow(): Promise<showModel[]> {
+  public async getAllShow(filter: Filter): Promise<showModel[]> {
     return showModel.findAll({
       raw: true,
+      where: filter,
     });
   }
 
@@ -30,22 +32,42 @@ export default class ShowRepo {
    *
    */
   public async getAllShowPaginated(
+    filter: Filter,
     page: number,
     limit: number
   ): Promise<showModel[]> {
     const offset: number = (page - 1) * limit;
-    return showModel.findAll({ raw: true, limit: limit, offset: offset });
+    return showModel.findAll({
+      raw: true,
+      limit: limit,
+      offset: offset,
+      where: filter,
+    });
   }
 
   /**
    *
-   * @param: `none`
+   * @param title
+   * @param filter
+   * @description `finds the film with title = title`
+   *
+   */
+  public async getByTitle(title: string, filter: Filter) {
+    return showModel.findAll({
+      raw: true,
+      where: { ...filter, title: { [Op.substring]: title } },
+    });
+  }
+
+  /**
+   *
+   * @param: filters
    * @return: `Promise<number>`
    * @description: `returns the total number of shows`
    *
    */
-  public async getTotalShow(): Promise<number> {
-    return showModel.count();
+  public async getTotalShow(filter: Filter): Promise<number> {
+    return showModel.count({ where: filter });
   }
 
   /**

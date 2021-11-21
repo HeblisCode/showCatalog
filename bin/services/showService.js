@@ -17,15 +17,15 @@ class showService {
     constructor() {
         this.repository = new showRepo_1.default();
     }
-    getAllShow(page, limit) {
+    getAllShow(filter, page, limit) {
         return __awaiter(this, void 0, void 0, function* () {
             let list = [];
-            const total = yield this.repository.getTotalShow();
+            const total = yield this.repository.getTotalShow(filter);
             if (page && limit) {
-                list = yield this.repository.getAllShowPaginated(page, limit);
+                list = yield this.repository.getAllShowPaginated(filter, page, limit);
             }
             else {
-                list = yield this.repository.getAllShow();
+                list = yield this.repository.getAllShow(filter);
             }
             list = list.map((show) => {
                 return {
@@ -117,6 +117,22 @@ class showService {
     getFavorites(userId) {
         return __awaiter(this, void 0, void 0, function* () {
             const shows = yield this.repository.getFavorites(userId);
+            return shows.map((show) => {
+                return {
+                    id: show.id,
+                    title: show.title,
+                    genre: show.genre,
+                    rating: show.rating,
+                    duration: show.duration,
+                    imageURL: show.image_url,
+                    minAge: show.min_age,
+                };
+            });
+        });
+    }
+    getByTitle(title, filter) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const shows = yield this.repository.getByTitle(title, filter);
             return shows.map((show) => {
                 return {
                     id: show.id,

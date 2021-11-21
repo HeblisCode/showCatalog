@@ -33,3 +33,9 @@ declare type EpisodeJSONResponse = {
   duration: number;
   url: string;
 };
+
+declare type Filter = {
+  nation?: string;
+  genre?: string;
+  has_seasons?: boolean;
+};

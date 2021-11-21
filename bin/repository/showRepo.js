@@ -12,6 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const sequelize_1 = require("sequelize");
 const episodeModel_1 = __importDefault(require("../models/episodeModel"));
 const favoriteModel_1 = __importDefault(require("../models/favoriteModel"));
 const filmModel_1 = __importDefault(require("../models/filmModel"));
@@ -20,22 +21,36 @@ const showModel_1 = __importDefault(require("../models/showModel"));
 const SQLZ_1 = require("../utils/SQLZ");
 class ShowRepo {
     constructor() { }
-    getAllShow() {
+    getAllShow(filter) {
         return __awaiter(this, void 0, void 0, function* () {
             return showModel_1.default.findAll({
                 raw: true,
+                where: filter,
             });
         });
     }
-    getAllShowPaginated(page, limit) {
+    getAllShowPaginated(filter, page, limit) {
         return __awaiter(this, void 0, void 0, function* () {
             const offset = (page - 1) * limit;
-            return showModel_1.default.findAll({ raw: true, limit: limit, offset: offset });
+            return showModel_1.default.findAll({
+                raw: true,
+                limit: limit,
+                offset: offset,
+                where: filter,
+            });
         });
     }
-    getTotalShow() {
+    getByTitle(title, filter) {
         return __awaiter(this, void 0, void 0, function* () {
-            return showModel_1.default.count();
+            return showModel_1.default.findAll({
+                raw: true,
+                where: Object.assign(Object.assign({}, filter), { title: { [sequelize_1.Op.substring]: title } }),
+            });
+        });
+    }
+    getTotalShow(filter) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return showModel_1.default.count({ where: filter });
         });
     }
     getShowById(showId) {

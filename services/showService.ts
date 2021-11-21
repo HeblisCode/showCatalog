@@ -5,14 +5,14 @@ import ShowRepo from "../repository/showRepo";
 export default class showService {
   private repository = new ShowRepo();
 
-  public async getAllShow(page?: number, limit?: number) {
+  public async getAllShow(filter: Filter, page?: number, limit?: number) {
     let list = [];
-    const total = await this.repository.getTotalShow();
+    const total = await this.repository.getTotalShow(filter);
 
     if (page && limit) {
-      list = await this.repository.getAllShowPaginated(page, limit);
+      list = await this.repository.getAllShowPaginated(filter, page, limit);
     } else {
-      list = await this.repository.getAllShow();
+      list = await this.repository.getAllShow(filter);
     }
 
     list = list.map((show: showModel) => {
@@ -104,6 +104,21 @@ export default class showService {
 
   public async getFavorites(userId: number) {
     const shows: showModel[] = await this.repository.getFavorites(userId);
+    return shows.map((show: showModel) => {
+      return {
+        id: show.id,
+        title: show.title,
+        genre: show.genre,
+        rating: show.rating,
+        duration: show.duration,
+        imageURL: show.image_url,
+        minAge: show.min_age,
+      };
+    });
+  }
+
+  public async getByTitle(title: string, filter: Filter) {
+    const shows: showModel[] = await this.repository.getByTitle(title, filter);
     return shows.map((show: showModel) => {
       return {
         id: show.id,
