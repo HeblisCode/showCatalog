@@ -5,7 +5,7 @@ import ShowRepo from "../repository/showRepo";
 /**
  * @author Davide Stefania
  */
-export default class showService {
+export default class ShowService {
   private repository = new ShowRepo();
 
   /**
@@ -115,9 +115,8 @@ export default class showService {
       directedBy: show.directed_by,
       abstract: show.abstract,
       imageURL: show.image_url,
-      hasSeasons: show.has_seasons,
+      hasSeasons: !!show.has_seasons,
       totalSeason: show.total_seasons,
-      imageUrl: show.image_url,
       minAge: show.min_age,
       url: film.url,
       seasons: null,

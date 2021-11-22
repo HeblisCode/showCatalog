@@ -18,8 +18,7 @@ export class UserController {
   @Post("/user/register")
   async registerUser(@Body() user: userModelCreationAttributes) {
     try {
-      await this.userService.register(user);
-      return { status: 200, message: "OK" };
+      return await this.userService.register(user);
     } catch (err) {
       return { status: 500, message: err.message };
     }
@@ -41,7 +40,7 @@ export class UserController {
         "Bearer " + this.jwt.sign(userIdJson, process.env.JWT_SECRET_TOKEN);
       return { status: 200, token: bearerToken };
     } catch (err) {
-      return { status: 401, message: err.message };
+      return { status: 401, message: err };
     }
   }
 }

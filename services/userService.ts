@@ -20,18 +20,14 @@ export default class UserService {
     if (!user) {
       throw new Error("user not found");
     }
-    try {
-      const isPwCorrect = await this.bcrypt.compare(
-        loginData.password,
-        user.password
-      );
-      if (isPwCorrect) {
-        return { userId: user.id };
-      } else {
-        throw new Error("incorrect password");
-      }
-    } catch {
-      throw new Error("bcrypt error");
+    const isPwCorrect = await this.bcrypt.compare(
+      loginData.password,
+      user.password
+    );
+    if (isPwCorrect) {
+      return { userId: user.id };
+    } else {
+      throw "incorrect password";
     }
   }
 
@@ -41,20 +37,26 @@ export default class UserService {
    * @description register a new user and encrypt the password
    */
   async register(payload: userModelCreationAttributes) {
+    let hashedPassword: string = "";
+
+    //pw encryption with bcrypt
     try {
-      //pw encryption with bcrypt
-      const hashedPassword: string = await this.bcrypt.hash(
-        payload.password,
-        10
-      );
+      hashedPassword = await this.bcrypt.hash(payload.password, 10);
+    } catch (err) {
+      return { status: 500, message: err.message };
+    }
+
+    //user creation
+    try {
       const user: userModelCreationAttributes = {
         email: payload.email,
         password: hashedPassword,
         age: payload.age,
       };
-      this.userRepo.registerUser(user);
-    } catch {
-      throw new Error("bcrypt error");
+      await this.userRepo.registerUser(user);
+      return { status: 200, message: "ok" };
+    } catch (err) {
+      return { status: 409, message: err.message };
     }
   }
 }

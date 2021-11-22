@@ -20,7 +20,6 @@ const seasonModel_1 = __importDefault(require("../models/seasonModel"));
 const showModel_1 = __importDefault(require("../models/showModel"));
 const SQLZ_1 = require("../utils/SQLZ");
 class ShowRepo {
-    constructor() { }
     getAllShow(filter) {
         return __awaiter(this, void 0, void 0, function* () {
             return showModel_1.default.findAll({

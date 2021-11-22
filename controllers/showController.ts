@@ -8,14 +8,14 @@ import {
 } from "routing-controllers";
 import FavoriteService from "../services/favoriteService";
 import RatingService from "../services/ratingService";
-import showService from "../services/showService";
+import ShowService from "../services/showService";
 
 /**
  * @author Davide Stefania
  */
 @JsonController()
 export class ShowController {
-  private service = new showService();
+  private showService = new ShowService();
   private favoriteService = new FavoriteService();
   private ratingService = new RatingService();
 
@@ -25,14 +25,14 @@ export class ShowController {
    * http://localhost:3000/show?page=3&limit=1
    * @param request
    * @param filter
-   * @returns
+   * @returns every show that match the filter with pagination
    */
   @Get("/show")
   async getAll(@Req() request: any, @Body() filter: Filter) {
     const page: number = +request.query?.page;
     const limit: number = +request.query?.limit;
     try {
-      return (await this.service.getAllShow(
+      return (await this.showService.getAllShow(
         filter,
         page,
         limit
@@ -51,7 +51,7 @@ export class ShowController {
   @Get("/show/title/:title")
   async getByTitle(@Param("title") title: string, @Body() filter: Filter) {
     try {
-      return (await this.service.getByTitle(
+      return (await this.showService.getByTitle(
         title,
         filter
       )) as ShowJSONResponse[];
@@ -70,7 +70,7 @@ export class ShowController {
   @Get("/show/detail/:showId")
   async getShowDetail(@Param("showId") showId: number, @Req() req: any) {
     try {
-      const data: ShowDetailJSONResponse = await this.service.getShowDetail(
+      const data: ShowDetailJSONResponse = await this.showService.getShowDetail(
         showId
       );
       const isFavorite: boolean = await this.favoriteService.isFavorite(
@@ -96,7 +96,7 @@ export class ShowController {
   @Get("/show/favorites")
   async getFavorites(@Req() req: any) {
     try {
-      return (await this.service.getFavorites(
+      return (await this.showService.getFavorites(
         req.userId
       )) as ShowJSONResponse[];
     } catch (err) {

@@ -24,33 +24,35 @@ class UserService {
             if (!user) {
                 throw new Error("user not found");
             }
-            try {
-                const isPwCorrect = yield this.bcrypt.compare(loginData.password, user.password);
-                if (isPwCorrect) {
-                    return { userId: user.id };
-                }
-                else {
-                    throw new Error("incorrect password");
-                }
+            const isPwCorrect = yield this.bcrypt.compare(loginData.password, user.password);
+            if (isPwCorrect) {
+                return { userId: user.id };
             }
-            catch (_a) {
-                throw new Error("bcrypt error");
+            else {
+                throw "incorrect password";
             }
         });
     }
     register(payload) {
         return __awaiter(this, void 0, void 0, function* () {
+            let hashedPassword = "";
             try {
-                const hashedPassword = yield this.bcrypt.hash(payload.password, 10);
+                hashedPassword = yield this.bcrypt.hash(payload.password, 10);
+            }
+            catch (err) {
+                return { status: 500, message: err.message };
+            }
+            try {
                 const user = {
                     email: payload.email,
                     password: hashedPassword,
                     age: payload.age,
                 };
-                this.userRepo.registerUser(user);
+                yield this.userRepo.registerUser(user);
+                return { status: 200, message: "ok" };
             }
-            catch (_a) {
-                throw new Error("bcrypt error");
+            catch (err) {
+                return { status: 409, message: err.message };
             }
         });
     }

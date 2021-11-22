@@ -13,21 +13,21 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const showRepo_1 = __importDefault(require("../repository/showRepo"));
-class showService {
+class ShowService {
     constructor() {
         this.repository = new showRepo_1.default();
     }
     getAllShow(filter, page, limit) {
         return __awaiter(this, void 0, void 0, function* () {
-            let list = [];
+            let modelList = [];
             const total = yield this.repository.getTotalShow(filter);
             if (page && limit) {
-                list = yield this.repository.getAllShowPaginated(filter, page, limit);
+                modelList = yield this.repository.getAllShowPaginated(filter, page, limit);
             }
             else {
-                list = yield this.repository.getAllShow(filter);
+                modelList = yield this.repository.getAllShow(filter);
             }
-            list = list.map((show) => {
+            const list = modelList.map((show) => {
                 return {
                     id: show.id,
                     title: show.title,
@@ -71,6 +71,7 @@ class showService {
                 imageURL: show.image_url,
                 hasSeasons: !!show.has_seasons,
                 totalSeason: show.total_seasons,
+                url: null,
                 minAge: show.min_age,
                 seasons: mappedSeasons,
             };
@@ -91,10 +92,10 @@ class showService {
                 directedBy: show.directed_by,
                 abstract: show.abstract,
                 imageURL: show.image_url,
-                hasSeasons: show.has_seasons,
+                hasSeasons: !!show.has_seasons,
                 totalSeason: show.total_seasons,
-                imageUrl: show.image_url,
                 minAge: show.min_age,
+                url: film.url,
                 seasons: null,
             };
         });
@@ -150,5 +151,5 @@ class showService {
         });
     }
 }
-exports.default = showService;
+exports.default = ShowService;
 //# sourceMappingURL=showService.js.map
