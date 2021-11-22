@@ -37,4 +37,11 @@ export default class RatingRepo {
     );
     return votesSum / totalVotes;
   }
+
+  async findUserVote(userId: number, showId: number) {
+    return ratingModel.findAll({
+      raw: true,
+      where: { user_id: userId, show_id: showId },
+    });
+  }
 }

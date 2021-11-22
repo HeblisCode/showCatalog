@@ -25,7 +25,7 @@ showModel.init({
         type: sequelize_1.DataTypes.STRING,
     },
     prod_year: {
-        type: sequelize_1.DataTypes.NUMBER,
+        type: sequelize_1.DataTypes.STRING,
     },
     duration: {
         type: sequelize_1.DataTypes.NUMBER,

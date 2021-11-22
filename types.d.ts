@@ -3,22 +3,35 @@ declare type LoginData = {
   password: string;
 };
 
+declare type ShowJSONResponse = {
+  id: number;
+  title: string;
+  genre: string;
+  rating: number;
+  duration: number;
+  imageURL: string;
+  minAge: number;
+  hasSeasons: boolean;
+};
+
 declare type ShowDetailJSONResponse = {
   id: number;
   title: string;
   genre: string;
   nation: string;
   prodYear: string;
-  rating: string;
+  rating: number;
   duration: number | null;
   directedBy: string | null;
   abstract: string;
   imageURL: string;
   hasSeasons: boolean;
   totalSeason: number | null;
-  url: string | null;
+  imageUrl: string | null;
   minAge: number | null;
-  seasons: SeasonJSONResponse[];
+  seasons: SeasonJSONResponse[] | null;
+  isFavorite?: boolean;
+  hasVoted?: boolean;
 };
 
 declare type SeasonJSONResponse = {

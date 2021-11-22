@@ -4,7 +4,9 @@
 //   }
 //   this.userRepo.rateShow(rate, userId, showId);
 
-import { ratingModelCreationAttributes } from "../models/ratingModel";
+import ratingModel, {
+  ratingModelCreationAttributes,
+} from "../models/ratingModel";
 import RatingRepo from "../repository/ratingRepo";
 import showService from "./showService";
 
@@ -24,5 +26,13 @@ export default class RatingService {
     await this.showService.updateShowRating(rating.show_id, newRating);
 
     return { status: 200, message: "Ok" };
+  }
+
+  async hasUserVoted(userId: number, showId: number): Promise<boolean> {
+    const userVote: ratingModel[] = await this.ratingRepo.findUserVote(
+      userId,
+      showId
+    );
+    return userVote.length > 0;
   }
 }

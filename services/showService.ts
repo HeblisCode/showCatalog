@@ -24,7 +24,8 @@ export default class showService {
         duration: show.duration,
         imageURL: show.image_url,
         minAge: show.min_age,
-      };
+        hasSeasons: !!show.has_seasons,
+      } as ShowJSONResponse;
     });
 
     return {
@@ -38,14 +39,15 @@ export default class showService {
     const show = await this.repository.getShowById(reqShowId);
     const seasons = await this.repository.getSeasons(reqShowId);
 
-    const mappedSeasons = await Promise.all(
+    const mappedSeasons: SeasonJSONResponse[] = await Promise.all(
       seasons.map(async (el: any) => {
-        const episodes = await this.repository.getEpisodes(el.id);
+        const episodes: EpisodeJSONResponse[] =
+          await this.repository.getEpisodes(el.id);
         return {
           seasonNumber: el.season_number,
           id: el.id,
           episodes: episodes,
-        };
+        } as SeasonJSONResponse;
       })
     );
 
@@ -64,13 +66,13 @@ export default class showService {
       totalSeason: show.total_seasons,
       minAge: show.min_age,
       seasons: mappedSeasons,
-    };
+    } as ShowDetailJSONResponse;
   }
 
   public async getFilmByShow(showId: number) {
     const show: showModel = await this.repository.getShowById(showId);
     const film: filmModel = await this.repository.getFilm(showId);
-    console.log(show);
+
     return {
       id: show.id,
       title: show.title,
@@ -82,11 +84,12 @@ export default class showService {
       directedBy: show.directed_by,
       abstract: show.abstract,
       imageURL: show.image_url,
-      hasSeasons: !!show.has_seasons,
+      hasSeasons: show.has_seasons,
       totalSeason: show.total_seasons,
+      imageUrl: show.image_url,
       minAge: show.min_age,
-      URL: film.url,
-    };
+      seasons: null,
+    } as ShowDetailJSONResponse;
   }
 
   public async getShowDetail(showId: number) {
@@ -113,7 +116,8 @@ export default class showService {
         duration: show.duration,
         imageURL: show.image_url,
         minAge: show.min_age,
-      };
+        hasSeasons: !!show.has_seasons,
+      } as ShowJSONResponse;
     });
   }
 
@@ -128,7 +132,8 @@ export default class showService {
         duration: show.duration,
         imageURL: show.image_url,
         minAge: show.min_age,
-      };
+        hasSeasons: !!show.has_seasons,
+      } as ShowJSONResponse;
     });
   }
 }

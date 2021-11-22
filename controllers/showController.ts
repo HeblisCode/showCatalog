@@ -9,6 +9,7 @@ import {
 } from "routing-controllers";
 import { userModelCreationAttributes } from "../models/userModel";
 import FavoriteService from "../services/favoriteService";
+import RatingService from "../services/ratingService";
 import showService from "../services/showService";
 import UserService from "../services/userService";
 
@@ -16,6 +17,7 @@ import UserService from "../services/userService";
 export class ShowController {
   private service = new showService();
   private favoriteService = new FavoriteService();
+  private ratingService = new RatingService();
 
   /**
    * http://localhost:3000/show
@@ -35,7 +37,7 @@ export class ShowController {
     }
   }
 
-  @Get("/show/:title")
+  @Get("/show/title/:title")
   async getByTitle(@Param("title") title: string, @Body() filter: Filter) {
     try {
       return await this.service.getByTitle(title, filter);
@@ -54,12 +56,18 @@ export class ShowController {
   @Get("/show/detail/:showId")
   async getShowDetail(@Param("showId") showId: number, @Req() req: any) {
     try {
-      const data = await this.service.getShowDetail(showId);
-      const isFavorite = await this.favoriteService.isFavorite(
+      const data: ShowDetailJSONResponse = await this.service.getShowDetail(
+        showId
+      );
+      const isFavorite: boolean = await this.favoriteService.isFavorite(
         showId,
         req.userId
       );
-      return { ...data, isFavorite };
+      const hasVoted: boolean = await this.ratingService.hasUserVoted(
+        req.userId,
+        showId
+      );
+      return { ...data, isFavorite, hasVoted } as ShowDetailJSONResponse;
     } catch (err) {
       return { status: 404, message: "notFound" };
     }

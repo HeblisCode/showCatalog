@@ -36,6 +36,7 @@ class showService {
                     duration: show.duration,
                     imageURL: show.image_url,
                     minAge: show.min_age,
+                    hasSeasons: !!show.has_seasons,
                 };
             });
             return {
@@ -79,7 +80,6 @@ class showService {
         return __awaiter(this, void 0, void 0, function* () {
             const show = yield this.repository.getShowById(showId);
             const film = yield this.repository.getFilm(showId);
-            console.log(show);
             return {
                 id: show.id,
                 title: show.title,
@@ -91,10 +91,11 @@ class showService {
                 directedBy: show.directed_by,
                 abstract: show.abstract,
                 imageURL: show.image_url,
-                hasSeasons: !!show.has_seasons,
+                hasSeasons: show.has_seasons,
                 totalSeason: show.total_seasons,
+                imageUrl: show.image_url,
                 minAge: show.min_age,
-                URL: film.url,
+                seasons: null,
             };
         });
     }
@@ -117,6 +118,7 @@ class showService {
     getFavorites(userId) {
         return __awaiter(this, void 0, void 0, function* () {
             const shows = yield this.repository.getFavorites(userId);
+            console.log("############################", shows, userId);
             return shows.map((show) => {
                 return {
                     id: show.id,
@@ -126,6 +128,7 @@ class showService {
                     duration: show.duration,
                     imageURL: show.image_url,
                     minAge: show.min_age,
+                    hasSeasons: !!show.has_seasons,
                 };
             });
         });
@@ -142,6 +145,7 @@ class showService {
                     duration: show.duration,
                     imageURL: show.image_url,
                     minAge: show.min_age,
+                    hasSeasons: !!show.has_seasons,
                 };
             });
         });
