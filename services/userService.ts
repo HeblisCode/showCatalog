@@ -1,16 +1,17 @@
 import userModel, { userModelCreationAttributes } from "../models/userModel";
 import UserRepo from "../repository/userRepo";
 
+/**
+ * @author Davide Stefania
+ */
 export default class UserService {
   private userRepo: UserRepo = new UserRepo();
   private bcrypt = require("bcrypt");
 
   /**
    *
-   * @param `loginData: LoginData`
-   * @returns `Promise<{ userId: number }>`
-   * @description `returns an object with the user id if the pw is correct, otherwise throws an error`
-   *
+   * @param loginData
+   * @returns an object with the user id if the pw is correct, otherwise throws an error
    */
   async login(loginData: LoginData): Promise<{ userId: number }> {
     const user: userModel = await this.userRepo.findUserByEmail(
@@ -36,9 +37,8 @@ export default class UserService {
 
   /**
    *
-   * @param `payload`
-   * @description `register a new user and encrypt the password`
-   *
+   * @param payload
+   * @description register a new user and encrypt the password
    */
   async register(payload: userModelCreationAttributes) {
     try {

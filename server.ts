@@ -4,6 +4,7 @@ import { ShowController } from "./controllers/showController";
 import { UserController } from "./controllers/userController";
 import { RatingController } from "./controllers/ratingController";
 import { FavoriteController } from "./controllers/favoriteController";
+require("dotenv").config();
 
 const app = createExpressServer({
   controllers: [
@@ -26,7 +27,7 @@ async function checkJwtToken(action: Action) {
   const token = action.request.headers["authorization"]?.split(" ")[1];
   let isValid: boolean = false;
 
-  jwt.verify(token, "test", (err: any, user: any) => {
+  jwt.verify(token, process.env.JWT_SECRET_TOKEN, (err: any, user: any) => {
     if (err) {
       return;
     } else {

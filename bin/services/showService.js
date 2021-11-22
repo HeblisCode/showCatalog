@@ -118,7 +118,6 @@ class showService {
     getFavorites(userId) {
         return __awaiter(this, void 0, void 0, function* () {
             const shows = yield this.repository.getFavorites(userId);
-            console.log("############################", shows, userId);
             return shows.map((show) => {
                 return {
                     id: show.id,

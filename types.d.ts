@@ -14,6 +14,12 @@ declare type ShowJSONResponse = {
   hasSeasons: boolean;
 };
 
+declare type PaginatedShowJSONResponse = {
+  list: ShowJSONResponse[];
+  total: number;
+  page: number | null;
+};
+
 declare type ShowDetailJSONResponse = {
   id: number;
   title: string;
@@ -29,6 +35,7 @@ declare type ShowDetailJSONResponse = {
   totalSeason: number | null;
   imageUrl: string | null;
   minAge: number | null;
+  url: string | null;
   seasons: SeasonJSONResponse[] | null;
   isFavorite?: boolean;
   hasVoted?: boolean;

@@ -1,26 +1,26 @@
 import userModel, { userModelCreationAttributes } from "../models/userModel";
 
+/**
+ * @author Davide Stefania
+ */
 export default class UserRepo {
-  constructor() {}
-
   /**
    *
    * @param user `{email: string, password: string, age: number}`
    * @description register a new user
-   *
    */
-  async registerUser(user: userModelCreationAttributes): Promise<userModel> {
+  public async registerUser(
+    user: userModelCreationAttributes
+  ): Promise<userModel> {
     return userModel.create(user);
   }
 
   /**
    *
-   * @param user `email: string`
-   * @returns `Promise<userModel>`
-   * @description find an existing user by mail
-   *
+   * @param email
+   * @returns finds a user by email
    */
-  async findUserByEmail(email: string): Promise<userModel> {
+  public async findUserByEmail(email: string): Promise<userModel> {
     const user: userModel = await userModel.findOne({
       where: { email: email },
     });

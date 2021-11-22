@@ -2,20 +2,38 @@ import filmModel from "../models/filmModel";
 import showModel from "../models/showModel";
 import ShowRepo from "../repository/showRepo";
 
+/**
+ * @author Davide Stefania
+ */
 export default class showService {
   private repository = new ShowRepo();
 
-  public async getAllShow(filter: Filter, page?: number, limit?: number) {
-    let list = [];
-    const total = await this.repository.getTotalShow(filter);
+  /**
+   *
+   * @param filter
+   * @param page
+   * @param limit
+   * @returns returns all the shows that matches the filters and return a paginated array if page and limit are defined
+   */
+  public async getAllShow(
+    filter: Filter,
+    page?: number,
+    limit?: number
+  ): Promise<PaginatedShowJSONResponse> {
+    let modelList: showModel[] = [];
+    const total: number = await this.repository.getTotalShow(filter);
 
     if (page && limit) {
-      list = await this.repository.getAllShowPaginated(filter, page, limit);
+      modelList = await this.repository.getAllShowPaginated(
+        filter,
+        page,
+        limit
+      );
     } else {
-      list = await this.repository.getAllShow(filter);
+      modelList = await this.repository.getAllShow(filter);
     }
 
-    list = list.map((show: showModel) => {
+    const list: ShowJSONResponse[] = modelList.map((show: showModel) => {
       return {
         id: show.id,
         title: show.title,
@@ -32,10 +50,17 @@ export default class showService {
       list,
       total,
       page: page,
-    };
+    } as PaginatedShowJSONResponse;
   }
 
-  public async getSerieByShow(reqShowId: number) {
+  /**
+   *
+   * @param reqShowId
+   * @returns the show details when the show is a serie
+   */
+  public async getSerieByShow(
+    reqShowId: number
+  ): Promise<ShowDetailJSONResponse> {
     const show = await this.repository.getShowById(reqShowId);
     const seasons = await this.repository.getSeasons(reqShowId);
 
@@ -64,11 +89,17 @@ export default class showService {
       imageURL: show.image_url,
       hasSeasons: !!show.has_seasons,
       totalSeason: show.total_seasons,
+      url: null,
       minAge: show.min_age,
       seasons: mappedSeasons,
     } as ShowDetailJSONResponse;
   }
 
+  /**
+   *
+   * @param showId
+   * @returns the show detail when the show is a film
+   */
   public async getFilmByShow(showId: number) {
     const show: showModel = await this.repository.getShowById(showId);
     const film: filmModel = await this.repository.getFilm(showId);
@@ -88,11 +119,17 @@ export default class showService {
       totalSeason: show.total_seasons,
       imageUrl: show.image_url,
       minAge: show.min_age,
+      url: film.url,
       seasons: null,
     } as ShowDetailJSONResponse;
   }
 
-  public async getShowDetail(showId: number) {
+  /**
+   *
+   * @param showId
+   * @returns calls the correct method based on the show type (serie/film)
+   */
+  public async getShowDetail(showId: number): Promise<ShowDetailJSONResponse> {
     const hasSeasons: boolean = await this.repository.hasSeasons(showId);
     if (hasSeasons) {
       return this.getSerieByShow(showId);
@@ -101,11 +138,22 @@ export default class showService {
     }
   }
 
+  /**
+   *
+   * @param showId
+   * @param newRating
+   * @returns updates the show rating field
+   */
   public async updateShowRating(showId: number, newRating: number) {
     return this.repository.updateShowRating(showId, newRating);
   }
 
-  public async getFavorites(userId: number) {
+  /**
+   *
+   * @param userId
+   * @returns an array with all the user favorite shows
+   */
+  public async getFavorites(userId: number): Promise<ShowJSONResponse[]> {
     const shows: showModel[] = await this.repository.getFavorites(userId);
     return shows.map((show: showModel) => {
       return {

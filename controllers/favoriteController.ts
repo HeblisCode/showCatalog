@@ -1,21 +1,25 @@
 import {
-  Body,
   Post,
   JsonController,
   Req,
-  Res,
   Authorized,
-  Get,
   Param,
 } from "routing-controllers";
-import { userModelCreationAttributes } from "../models/userModel";
 import FavoriteService from "../services/favoriteService";
-import UserService from "../services/userService";
 
+/**
+ * @author Davide Stefania
+ */
 @JsonController()
 export class FavoriteController {
   private favoriteService = new FavoriteService();
 
+  /**
+   * http://localhost:3000/favorite/add/{showId}
+   * @param showId
+   * @param req
+   * @description `add a show to the user favorite list`
+   */
   @Authorized()
   @Post("/favorite/add/:showId")
   public async addFavorite(@Param("showId") showId: number, @Req() req: any) {
@@ -27,6 +31,12 @@ export class FavoriteController {
     }
   }
 
+  /**
+   * http://localhost:3000/favorite/remove/{showId}
+   * @param showId
+   * @param req
+   * @description `remove a show to the user favorite list`
+   */
   @Authorized()
   @Post("/favorite/remove/:showId")
   public async removeFavorite(

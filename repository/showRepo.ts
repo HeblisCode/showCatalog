@@ -7,15 +7,14 @@ import seasonModel from "../models/seasonModel";
 import showModel from "../models/showModel";
 import { SQLZ } from "../utils/SQLZ";
 
+/**
+ * @author Davide Stefania
+ */
 export default class ShowRepo {
-  constructor() {}
-
   /**
    *
-   * @param: `none`
-   * @return: `Promise<showModel[]>`
-   * @description: `returns an array with all the shows`
-   *
+   * @param filter
+   * @returns every show that matches the filters params
    */
   public async getAllShow(filter: Filter): Promise<showModel[]> {
     return showModel.findAll({
@@ -26,10 +25,10 @@ export default class ShowRepo {
 
   /**
    *
-   * @param: `page: number, limit: number`
-   * @return: `Promise<showModel[]>`
-   * @description: `returns a paginated array of shows`
-   *
+   * @param filter
+   * @param page
+   * @param limit
+   * @returns every show that matches the filters params but with pagination
    */
   public async getAllShowPaginated(
     filter: Filter,
@@ -49,10 +48,9 @@ export default class ShowRepo {
    *
    * @param title
    * @param filter
-   * @description `finds the film with title = title`
-   *
+   * @returns every show with title like title arg
    */
-  public async getByTitle(title: string, filter: Filter) {
+  public async getByTitle(title: string, filter: Filter): Promise<showModel[]> {
     return showModel.findAll({
       raw: true,
       where: { ...filter, title: { [Op.substring]: title } },
@@ -61,10 +59,8 @@ export default class ShowRepo {
 
   /**
    *
-   * @param: filters
-   * @return: `Promise<number>`
-   * @description: `returns the total number of shows`
-   *
+   * @param filter
+   * @returns total number of shows that matches the filters
    */
   public async getTotalShow(filter: Filter): Promise<number> {
     return showModel.count({ where: filter });
@@ -72,10 +68,8 @@ export default class ShowRepo {
 
   /**
    *
-   * @param: `showId: number`
-   * @return: `Promise<showModel>`
-   * @description: `returns the a show`
-   *
+   * @param showId
+   * @returns a show with id = showId
    */
   public async getShowById(showId: number): Promise<showModel> {
     return showModel.findByPk(showId, { raw: true });
@@ -83,10 +77,8 @@ export default class ShowRepo {
 
   /**
    *
-   * @param `showId: number`
-   * @returns `Promise<filmModel>`
-   * @description takes a show id and return the corresponding film
-   *
+   * @param showId
+   * @returns takes a show id and return the corresponding film
    */
   public async getFilm(showId: number): Promise<filmModel> {
     return filmModel.findOne({
@@ -97,10 +89,8 @@ export default class ShowRepo {
 
   /**
    *
-   * @param `showId: number`
-   * @returns `Promise<seasonModel[]>`
-   * @description takes a show id and return all its seasons
-   *
+   * @param showId
+   * @returns takes a show id and return all its seasons
    */
   public async getSeasons(showId: number): Promise<seasonModel[]> {
     return seasonModel.findAll({
@@ -112,10 +102,8 @@ export default class ShowRepo {
 
   /**
    *
-   * @param `seasonId: number`
-   * @returns `Promise<episodeModel[]>`
-   * @description takes a season id and return all its episodes
-   *
+   * @param seasonId
+   * @returns takes a season id and return all its episodes
    */
   public async getEpisodes(seasonId: number): Promise<episodeModel[]> {
     return episodeModel.findAll({
@@ -127,10 +115,8 @@ export default class ShowRepo {
 
   /**
    *
-   * @param `showId: number`
-   * @returns `Promise<boolean>`
-   * @description returns true if the show has seasons
-   *
+   * @param showId
+   * @returns true if the show has seasons
    */
   public async hasSeasons(showId: number): Promise<boolean> {
     const data = await showModel.findAll({
@@ -144,8 +130,7 @@ export default class ShowRepo {
    *
    * @param showId
    * @param newRating
-   * @description `updates a show rating column`
-   *
+   * @description updates a show rating column
    */
   public async updateShowRating(showId: number, newRating: number) {
     //showModel.update is not working as intended, i'm using a raw query while i try to solve this
@@ -157,10 +142,9 @@ export default class ShowRepo {
   /**
    *
    * @param userId
-   * @description `returns an array with all the favorites`
-   *
+   * @returns an array with all the favorites
    */
-  public async getFavorites(userId: number) {
+  public async getFavorites(userId: number): Promise<any> {
     return showModel.findAll({
       include: {
         model: favoriteModel,

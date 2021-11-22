@@ -2,27 +2,27 @@ import ratingModel, {
   ratingModelCreationAttributes,
 } from "../models/ratingModel";
 
+/**
+ * @author Davide Stefania
+ */
 export default class RatingRepo {
   /**
    *
-   * @param rate
-   * @param showId
-   * @param userId
+   * @param rating
    * @description creates a new rate entry
-   *
    */
-  async rateShow(rating: ratingModelCreationAttributes) {
+  public async rateShow(
+    rating: ratingModelCreationAttributes
+  ): Promise<ratingModel> {
     return ratingModel.create(rating);
   }
 
   /**
    *
    * @param showId
-   * @returns `Promise<number>`
-   * @description `returns the avg votes for a given showId`
-   *
+   * @description returns the avg votes for a given showId
    */
-  async evalAvgShowRating(showId: number): Promise<number> {
+  public async evalAvgShowRating(showId: number): Promise<number> {
     const totalVotes: number = await ratingModel.count({
       where: { show_id: showId },
     });
@@ -38,7 +38,16 @@ export default class RatingRepo {
     return votesSum / totalVotes;
   }
 
-  async findUserVote(userId: number, showId: number) {
+  /**
+   *
+   * @param userId
+   * @param showId
+   * @description finds the user vote entry for the show with showId
+   */
+  public async findUserVote(
+    userId: number,
+    showId: number
+  ): Promise<ratingModel[]> {
     return ratingModel.findAll({
       raw: true,
       where: { user_id: userId, show_id: showId },
